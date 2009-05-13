@@ -1,0 +1,23 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+
+  <include package=".browser"/>
+  
+  <genericsetup:registerProfile
+      name="default"
+      title="Proxy Property Install"
+      directory="profiles/default"
+      description="Proxy Property install profile"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="Proxy Property Uninstall"
+      directory="profiles/uninstall"
+      description="Proxy Property uninstall profile"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+</configure>
