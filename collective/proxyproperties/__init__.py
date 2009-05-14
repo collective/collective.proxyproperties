@@ -1,12 +1,15 @@
+from OFS.interfaces import ITraversable
 from persistent import Persistent
-from zope.annotation.interfaces import IAnnotations
+
 from zope.interface import implements
 from zope.app.component.hooks import getSite
-from Products.CMFCore.interfaces import IPropertiesTool
-#from five.localsitemanager import find_next_sitemanager
 
-import logging
-logger = logging.getLogger(__name__)
+from Products.CMFCore.interfaces import IPropertiesTool
+
+from collective.proxyproperties.interfaces import IProxyPropertyAble
+
+import zope.i18nmessageid
+proxypropertiesMessageFactory = zope.i18nmessageid.MessageFactory("collective.proxyproperties")
 
 _marker = object()
 PROXY_PROPERTIES = 'collective.proxyproperties.propertyoverrides'
@@ -16,6 +19,9 @@ class ProxyProperties(Persistent):
     """
     implements(IPropertiesTool)
     
+    # XXX is this evil needed?  set security properly...
+    __allow_access_to_unprotected_subobjects__ = True
+    
     def __getattribute__(self, name):
         # XXX we only replicate property sheets set in
         #     the portal_properties tool.  I would like to
@@ -24,10 +30,19 @@ class ProxyProperties(Persistent):
         portal = getSite()
         prop_sheets = portal.portal_properties.objectIds()
         if name in prop_sheets:
-            #parent_sm = find_next_sitemanager(self)
             parent_props = portal.portal_properties
             return FakePropertySheet(parent_props[name])
         return super(ProxyProperties, self).__getattribute__(name)
+    
+    def getProperty(self, name, default=None):
+        portal = getSite()
+        prop_sheet = portal.portal_properties
+        return prop_sheet.getProperty(name, default)
+    
+    def hasProperty(self, name):
+        portal = getSite()
+        prop_sheet = portal.portal_properties
+        return prop_sheet.hasProperty(name)
 
 
 class FakePropertySheet(object):
@@ -35,40 +50,46 @@ class FakePropertySheet(object):
     if we haven't overridden the property that is requested.
     
     XXX: need to take care of all the prop sheet methods...
+    XXX: not completely implementing ITraversable yet...
     """
+    implements(ITraversable)
+    
+    # XXX is this evil needed?  set security properly...
+    __allow_access_to_unprotected_subobjects__ = True
+    
+    def __init__(self, prop_sheet):
+        # a copy of the original property sheet
+        self.prop_sheet = prop_sheet
+        self.prop_sheet_ids = prop_sheet.propertyIds()
+    
+    def __getattribute__(self, name):
+        # we only want to short circuit for properties
+        if name != "prop_sheet_ids" and name in self.prop_sheet_ids:
+            return self._getProxyProperty(name)
+        return super(FakePropertySheet, self).__getattribute__(name)
+    
+    def unrestrictedTraverse(self, path, default=None, restricted=0):
+        return getattr(self, path)
+    
+    def restrictedTraverse(self, path, default=None):
+        return self.unrestrictedTraverse(path, default)
     
     def _getProxyProperty(self, prop, default=None):
-        """
-        """
         portal = getSite()
-        annos = IAnnotations(portal)
-        ps_id = self.prop_sheet.id
-        overrides = annos.get(PROXY_PROPERTIES, {}).get(ps_id, {})
-        custom_prop = overrides.get(prop, _marker)
+        proxy_props = IProxyPropertyAble(portal)
+        custom_prop = proxy_props.getProperty(
+            self.prop_sheet.id,
+            prop,
+            _marker
+            )
         if custom_prop is not _marker:
             return custom_prop
         # default back to the original
         return self.prop_sheet.getProperty(prop, default)
     
     def getProperty(self, prop, default=None):
-        """
-        """
         return self._getProxyProperty(prop, default)
     
-    def __getattribute__(self, name):
-        if name != "attrs_to_ignore" and name not in self.attrs_to_ignore:
-            return self._getProxyProperty(name)
-        return super(FakePropertySheet, self).__getattribute__(name)
-    
-    def __init__(self, prop_sheet):
-        """
-        """
-        # attrs that we need to get from self
-        self.attrs_to_ignore = [
-            'prop_sheet',
-            '_getProxyProperty',
-            'getProperty'
-            ]
-        # a copy of the original property sheet
-        self.prop_sheet = prop_sheet
+    def hasProperty(self, prop):
+        return self.prop_sheet.hasProperty(prop)
 

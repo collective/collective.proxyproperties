@@ -1,8 +1,10 @@
 <configure
-    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/zope"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
 
   <include package=".browser"/>
+  <include package="zope.component" file="meta.zcml"/>
+  <adapter factory=".adapters.ProxyProperties" />
   
   <genericsetup:registerProfile
       name="default"

@@ -2,6 +2,15 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
-    <!-- make some magic happen here -->
+  <browser:page
+      for="zope.app.component.interfaces.ISite"
+      name="proxyprops_edit"
+      class=".proxypropertieseditview.ProxyPropertiesEditView"
+      template="proxypropsedit.pt"
+      allowed_interface=".proxypropsedit.IProxyPropertiesEdit"
+      permission="zope.Public"
+      />
+
+  <!-- -*- extra stuff goes here -*- -->
 
 </configure>
