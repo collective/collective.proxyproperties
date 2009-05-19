@@ -76,14 +76,19 @@ class FakePropertySheet(object):
     
     def _getProxyProperty(self, prop, default=None):
         portal = getSite()
-        proxy_props = IProxyPropertyAble(portal)
-        custom_prop = proxy_props.getProperty(
-            self.prop_sheet.id,
-            prop,
-            _marker
-            )
-        if custom_prop is not _marker:
-            return custom_prop
+        # if for some reason we can't adapt, pass off to the
+        # default property sheet
+        try:
+            proxy_props = IProxyPropertyAble(portal)
+            custom_prop = proxy_props.getProperty(
+                self.prop_sheet.id,
+                prop,
+                _marker
+                )
+            if custom_prop is not _marker:
+                return custom_prop
+        except TypeError:
+            pass
         # default back to the original
         return self.prop_sheet.getProperty(prop, default)
     
