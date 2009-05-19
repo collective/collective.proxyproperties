@@ -5,7 +5,7 @@
   <browser:page
       for="zope.app.component.interfaces.ISite"
       name="proxyprops_edit"
-      class=".proxypropertieseditview.ProxyPropertiesEditView"
+      class=".proxypropsedit.ProxyPropertiesEditView"
       template="proxypropsedit.pt"
       allowed_interface=".proxypropsedit.IProxyPropertiesEdit"
       permission="zope.Public"
