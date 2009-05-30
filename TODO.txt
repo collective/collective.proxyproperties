@@ -1,0 +1,9 @@
+TODO
+====
+
+- write up some browser tests
+- sanity check
+- fully implement traversing and property sheet handlers
+- clean up property edit form
+  - make status message appear
+- move util code out into a module in the package
