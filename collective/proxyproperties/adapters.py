@@ -6,7 +6,8 @@ from zope.interface import implements
 from zope.component import adapts
 
 from collective.proxyproperties.interfaces import IProxyPropertyAble
-from collective.proxyproperties import PROXY_PROPERTIES
+
+PROXY_PROPERTIES = 'collective.proxyproperties.propertyoverrides'
 
 
 class ProxyProperties(object):
