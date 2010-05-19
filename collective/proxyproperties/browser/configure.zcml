@@ -8,7 +8,7 @@
       class=".proxypropsedit.ProxyPropertiesEdit"
       template="proxypropsedit.pt"
       allowed_interface=".proxypropsedit.IProxyPropertiesEdit"
-      permission="zope.Public"
+      permission="collective.proxyproperties.ManageProxyProperties"
       />
 
   <!-- -*- extra stuff goes here -*- -->
