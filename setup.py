@@ -25,7 +25,7 @@ setup(name='collective.proxyproperties',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
-          'collective.autopermisson',
+          'collective.autopermission',
       ],
       entry_points="""
       # -*- Entry points: -*-
