@@ -8,7 +8,7 @@
       class=".proxypropsedit.ProxyPropertiesEdit"
       template="proxypropsedit.pt"
       allowed_interface=".proxypropsedit.IProxyPropertiesEdit"
-      permission="collective.proxyproperties.ManageProxyProperties"
+      permission="collective.proxyproperties.ManageProperties"
       />
 
   <!-- -*- extra stuff goes here -*- -->

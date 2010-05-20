@@ -2,9 +2,7 @@
            i18n_domain="collective.proxyproperties">
 
   <!-- Define permissions. See also permissions.py -->
-
   <include package="collective.autopermission" />
-
   <permission
     id="collective.proxyproperties.ManageProperties"
     title="collective.proxyproperties: Manage properties"
