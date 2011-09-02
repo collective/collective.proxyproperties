@@ -1,8 +1,20 @@
 Changelog
 =========
 
+0.2 (xxxx-xx-xx)
+------------------
+
+- Fix issue with the `text` property type.
+  [claytron]
+
+- Added a new dependency on collective.autopermission.
+  Added a new permission (collective.proxyproperties.ManageProperties).
+  Gave the Manager role this new permission by default.
+  Updated the proxyprops_edit view to require this new permission.
+  [davidblewett]
+
 0.1 - (2009-07-10)
 ------------------
 
-* Initial release
+- Initial release
 
