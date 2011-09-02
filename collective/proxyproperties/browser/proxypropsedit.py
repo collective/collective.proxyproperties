@@ -29,15 +29,15 @@ class IProxyPropertiesEdit(Interface):
     def getPropertySheetIds():
         """Get a list of available property sheet IDs
         """
-    
+
     def getPropsForSheet(prop_sheet_id):
         """Return the props and type for the given sheet
         """
-    
+
     def decipherPropFieldType(prop_type):
         """Figure out what kind of field a property type maps to
         """
-    
+
     def getDefaultValue(prop_sheet_id, prop_id):
         """get the current value of the property
         """
@@ -48,7 +48,7 @@ class ProxyPropertiesEdit(BrowserView):
     ProxyPropertiesEdit browser view
     """
     implements(IProxyPropertiesEdit)
-    
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -62,7 +62,7 @@ class ProxyPropertiesEdit(BrowserView):
         # only take care of the form if it was actually submitted
         if self.request.get('form.submitted', False) == 'True':
             self.processForm()
-    
+
     def processForm(self):
         proxy_props = IProxyPropertyAble(self.context)
         # figure out which 'form' was saved
@@ -71,7 +71,7 @@ class ProxyPropertiesEdit(BrowserView):
                 break
         prop_map = self._getPropMap(prop_sheet_id)
         form_values = self.request.form
-        
+
         for prop_id in prop_map:
             prop_type = prop_map[prop_id]
             form_prop_id = 'form.%s.%s' % (prop_sheet_id, prop_id)
@@ -88,7 +88,7 @@ class ProxyPropertiesEdit(BrowserView):
             elif prop_type == 'int':
                 # XXX this will error out if not set correctly
                 prop_value = int(prop_value)
-            
+
             original_value = self._getOriginalValue(prop_sheet_id, prop_id)
             # check to see if the property has been changed
             # TODO this doesn't work completely...
@@ -96,19 +96,19 @@ class ProxyPropertiesEdit(BrowserView):
                 proxy_props.setProperty(prop_sheet_id, prop_id, prop_value)
             else:
                 proxy_props.clearProperty(prop_sheet_id, prop_id)
-        
+
         # clear properties that have the reset flag set in the form
-        map(lambda x: proxy_props.clearProperty(*x.split('.')), 
+        map(lambda x: proxy_props.clearProperty(*x.split('.')),
             form_values.get('form.reset_defaults', []))
-        
+
         # set the status message and redirect
         message = "Properties for %s saved" % prop_sheet_id
         IStatusMessage(self.request).addStatusMessage(message, 'info')
         return self.request.RESPONSE.redirect(self.context.absolute_url())
-    
+
     def getPropertySheetIds(self):
         return self.portal_props.objectIds()
-    
+
     def getPropsForSheet(self, prop_sheet_id):
         prop_sheet = self.portal_props[prop_sheet_id]
         return prop_sheet.propertyMap()
@@ -117,10 +117,10 @@ class ProxyPropertiesEdit(BrowserView):
         if prop_type in PROP_FIELD_TYPES_MAPPING:
             return PROP_FIELD_TYPES_MAPPING[prop_type]
         return None
-    
+
     def _getPropMap(self, prop_sheet_id):
         """get a mapping of property IDs and property types
-        
+
         XXX should probably get rid of this and use propertyMap as is
             since it includes the 'mode'
         """
@@ -129,7 +129,7 @@ class ProxyPropertiesEdit(BrowserView):
             for i in self.getPropsForSheet(prop_sheet_id)
             ]
         return dict(prop_map)
-    
+
     def getDefaultValue(self, prop_sheet_id, prop_id):
         prop_map = self._getPropMap(prop_sheet_id)
         prop_sheet = getattr(self.local_props, prop_sheet_id)
@@ -142,7 +142,7 @@ class ProxyPropertiesEdit(BrowserView):
             else:
                 return ''
         return prop
-    
+
     def _getOriginalValue(self, prop_sheet_id, prop_id):
         """Get the original value set in portal_properties
         """
