@@ -12,6 +12,7 @@ from collective.proxyproperties.interfaces import IProxyPropertyAble
 PROP_FIELD_TYPES_MAPPING = {
     'boolean': 'checkbox',
     'lines': 'textarea',
+    'text': 'textarea',
     'string': 'text',
     'int': 'text'
 }

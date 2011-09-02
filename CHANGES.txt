@@ -1,7 +1,11 @@
 Changelog
 =========
+
 0.2 (xxxx-xx-xx)
 ------------------
+
+- Fix issue with the `text` property type.
+  [claytron]
 
 - Added a new dependency on collective.autopermission.
   Added a new permission (collective.proxyproperties.ManageProperties).
