@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.3 (Unreleased)
+----------------
+
+- Don't proxy special attributes, persistence attributes, or
+  IObjectManager attributes.  Fixes problem with tests and
+  collective.lineage issue #41:
+  http://plone.org/products/collective-lineage/issues/41
+  [rossp]
+
 0.2 (2011-09-02)
 ----------------
 

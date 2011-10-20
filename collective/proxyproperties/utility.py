@@ -1,3 +1,5 @@
+import re
+
 from OFS.interfaces import ITraversable
 from persistent import Persistent
 
@@ -20,6 +22,9 @@ import zope.i18nmessageid
 proxypropertiesMessageFactory = zope.i18nmessageid.MessageFactory("collective.proxyproperties")
 
 _marker = object()
+
+unproxied_attrs_pattern = re.compile(r'^(_p_.*|__.*__)$')
+
 
 def findSiteRoot():
     """Method to get the site root from the KSS
@@ -46,14 +51,22 @@ class ProxyProperties(Persistent):
     __allow_access_to_unprotected_subobjects__ = True
     
     def __getattribute__(self, name):
+        # For special attributes and persistence, we act like
+        # ourselves
+        if unproxied_attrs_pattern.match(name) is not None:
+            return super(ProxyProperties, self).__getattribute__(name)
+
+        portal_properties = findSiteRoot().portal_properties
+        if name == 'objectIds':
+            return getattr(portal_properties, name)
+
         # XXX we only replicate property sheets set in
         #     the portal_properties tool.  I would like to
         #     be able to recurse up to get to the real prop
         #     sheet eventually.
-        portal = findSiteRoot()
-        prop_sheets = portal.portal_properties.objectIds()
+        prop_sheets = portal_properties.objectIds()
         if name in prop_sheets:
-            parent_props = portal.portal_properties
+            parent_props = portal_properties
             return FakePropertySheet(parent_props[name])
         return super(ProxyProperties, self).__getattribute__(name)
     
