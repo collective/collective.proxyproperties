@@ -80,6 +80,9 @@ class ProxyProperties(Persistent):
         prop_sheet = portal.portal_properties
         return prop_sheet.hasProperty(name)
 
+    def __contains__(self, name):
+        return name in self.objectIds()
+
 
 class FakePropertySheet(object):
     """Pretend like we are a property sheet.  Defer to the original
