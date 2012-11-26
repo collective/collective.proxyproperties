@@ -9,7 +9,7 @@ from zope.component import getMultiAdapter
 
 from Products.CMFCore.interfaces import IPropertiesTool
 
-# KSS 
+# KSS
 try:
     from kss.core.interfaces import IKSSView
     HAS_KSS = True
@@ -46,10 +46,10 @@ class ProxyProperties(Persistent):
     """A proxy object to gather properties
     """
     implements(IPropertiesTool)
-    
+
     # XXX is this evil needed?  set security properly...
     __allow_access_to_unprotected_subobjects__ = True
-    
+
     def __getattribute__(self, name):
         # For special attributes and persistence, we act like
         # ourselves
@@ -69,12 +69,12 @@ class ProxyProperties(Persistent):
             parent_props = portal_properties
             return FakePropertySheet(parent_props[name])
         return super(ProxyProperties, self).__getattribute__(name)
-    
+
     def getProperty(self, name, default=None):
         portal = findSiteRoot()
         prop_sheet = portal.portal_properties
         return prop_sheet.getProperty(name, default)
-    
+
     def hasProperty(self, name):
         portal = findSiteRoot()
         prop_sheet = portal.portal_properties
@@ -84,35 +84,35 @@ class ProxyProperties(Persistent):
         return name in self.objectIds()
 
 
-class FakePropertySheet(object):
+class FakePropertySheet(Persistent):
     """Pretend like we are a property sheet.  Defer to the original
     if we haven't overridden the property that is requested.
-    
+
     XXX: need to take care of all the prop sheet methods...
     XXX: not completely implementing ITraversable yet...
     """
     implements(ITraversable)
-    
+
     # XXX is this evil needed?  set security properly...
     __allow_access_to_unprotected_subobjects__ = True
-    
+
     def __init__(self, prop_sheet):
         # a copy of the original property sheet
         self.prop_sheet = prop_sheet
         self.prop_sheet_ids = prop_sheet.propertyIds()
-    
+
     def __getattribute__(self, name):
         # we only want to short circuit for properties
         if name != "prop_sheet_ids" and name in self.prop_sheet_ids:
             return self._getProxyProperty(name)
         return super(FakePropertySheet, self).__getattribute__(name)
-    
+
     def unrestrictedTraverse(self, path, default=None, restricted=0):
         return getattr(self, path)
-    
+
     def restrictedTraverse(self, path, default=None):
         return self.unrestrictedTraverse(path, default)
-    
+
     def _getProxyProperty(self, prop, default=None):
         portal = findSiteRoot()
         # if for some reason we can't adapt, pass off to the
@@ -130,10 +130,10 @@ class FakePropertySheet(object):
             pass
         # default back to the original
         return self.prop_sheet.getProperty(prop, default)
-    
+
     def getProperty(self, prop, default=None):
         return self._getProxyProperty(prop, default)
-    
+
     def hasProperty(self, prop):
         return self.prop_sheet.hasProperty(prop)
 

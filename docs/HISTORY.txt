@@ -1,8 +1,12 @@
 Changelog
 =========
 
-0.3 (Unreleased)
+0.3 (2012-11-26)
 ----------------
+
+- Make FakePropertySheet subclass Persistent, to satisfy
+  new requirements for getToolByName in Products.PloneHotfix20121106.
+  [davidblewett]
 
 - Don't proxy special attributes, persistence attributes, or
   IObjectManager attributes.  Fixes problem with tests and
