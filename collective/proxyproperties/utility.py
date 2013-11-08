@@ -4,7 +4,10 @@ from OFS.interfaces import ITraversable
 from persistent import Persistent
 
 from zope.interface import implements
-from zope.app.component.hooks import getSite
+try:
+    from zope.app.component.hooks import getSite
+except ImportError:
+    from zope.component.hooks import getSite
 from zope.component import getMultiAdapter
 
 from Products.CMFCore.interfaces import IPropertiesTool
