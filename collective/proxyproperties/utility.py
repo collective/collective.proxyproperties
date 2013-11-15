@@ -140,3 +140,6 @@ class FakePropertySheet(Persistent):
     def hasProperty(self, prop):
         return self.prop_sheet.hasProperty(prop)
 
+    def propertyIds(self):
+        return self.prop_sheet.propertyIds()
+
