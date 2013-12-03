@@ -5,3 +5,4 @@ Allow local site managers to override portal_properties property sheets.  This s
 
 The 0.x releases are a proof of concept, a rewrite may be in its future :)
 
+Version 0.4 is compatible with Plone 4.3.
